@@ -40,7 +40,7 @@ async def callback(
     return "ok"
 
 @handler.add(MessageEvent)
-def handle_message():
+def handle_message(event):
     message_text = event.message.text.lower()
     
     if "こんにちは" in message_text:
