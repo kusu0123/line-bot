@@ -1,5 +1,14 @@
+from linebot import LineBotApi, WwbhookHandler
+from linebot.exceptions import InvalidSignatureError
+from line.models import MessageEvent, TextMessage
 from fastapi import FastAPI
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+LINE_BOT_API=LineBotApi(os.environ["CHANNEL_ID"])
+handler=WebhookHandler(os.environ["CHANNEL_SECRET"])
 app = FastAPI()
 
 
