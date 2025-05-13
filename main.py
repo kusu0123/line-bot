@@ -8,7 +8,7 @@ import os
 
 load_dotenv()
 
-LINE_BOT_API=LineBotApi(os.environ["CHANNEL_ID"])
+LINE_BOT_API=LineBotApi(os.environ["ACCESS_TOKEN"])
 handler=WebhookHandler(os.environ["CHANNEL_SECRET"])
 app = FastAPI()
 
