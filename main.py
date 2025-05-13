@@ -1,9 +1,10 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from line.models import MessageEvent, TextMessage
+from linebot.models import MessageEvent, TextMessage
 from fastapi import FastAPI, Request, BackgroundTasks, Header
 from dotenv import load_dotenv
 from starlette.exceptions import HTTPException
+import os
 
 load_dotenv()
 
