@@ -1,4 +1,4 @@
-from linebot import LineBotApi, WwbhookHandler
+from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from line.models import MessageEvent, TextMessage
 from fastapi import FastAPI, Request, BackgroundTasks, Header
