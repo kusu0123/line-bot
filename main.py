@@ -49,7 +49,10 @@ def handle_message(event):
     elif "ありがとう" in message_text:
         message = TextMessage(text="こちらこそー")
         LINE_BOT_API.reply_message(event.reply_token, message)
-     
+    else :
+        message = TextMessage(text="いつも使ってくれてありがとう")
+        LINE_BOT_API.reply_message(event.reply_token, message)
+        
         
     
      
