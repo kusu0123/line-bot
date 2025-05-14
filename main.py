@@ -46,3 +46,10 @@ def handle_message(event):
     if "こんにちは" in message_text:
         message = TextMessage(text="こんにちは！！")
         LINE_BOT_API.reply_message(event.reply_token, message)
+    elif "ありがとう" in message_text:
+        message = TextMessage(text="こちらこそー")
+        LINE_BOT_API.reply_message(event.reply_token, message)
+     
+        
+    
+     
