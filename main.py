@@ -53,8 +53,8 @@ def handle_message(event):
         message = ImageSendMessage(
         original_content_url="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj0Uk0AZltkvruXawqvtOXHnVPBoLB6hEo-SDh4ouG9bGZnH4IaxxSGJZjehyphenhyphenvHHzRNDSNHPfTdatbR8bDmWXPhc4zzJtx7fIuLeJFPVJhfQkFp4LSqSR94mUZHJoqHtpMpe2Nu9p1pztSP/s1600/dog_sleep_run.png", # フルサイズ画像URL（HTTPS必須）
         preview_image_url="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj0Uk0AZltkvruXawqvtOXHnVPBoLB6hEo-SDh4ouG9bGZnH4IaxxSGJZjehyphenhyphenvHHzRNDSNHPfTdatbR8bDmWXPhc4zzJtx7fIuLeJFPVJhfQkFp4LSqSR94mUZHJoqHtpMpe2Nu9p1pztSP/s1600/dog_sleep_run.png"     # プレビュー画像URL（同じでもOK）
-    )
-    LINE_BOT_API.reply_message(event.reply_token, message)
+        )
+        LINE_BOT_API.reply_message(event.reply_token, message)
     else:
         message = TextMessage(text="いつも使ってくれてありがとう")
         LINE_BOT_API.reply_message(event.reply_token, message)   
