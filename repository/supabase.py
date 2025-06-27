@@ -17,17 +17,15 @@ def insert_package(conn_str:str,package_name:str):
                 print(f"'{package_name}' のパッケージと関連レコードが追加されました。")
     except psycopg.Error as e:
         print(f"データベースエラーが発生しました: {e}")
-
+    except Exception as e:  # その他の予期せぬエラーもキャッチする
+        print(f"予期せぬエラーが発生しました: {e}")
 # データを取ってくる関数 
 def select_package_record(conn_str:str):
     print("--- SELECTクエリの実行 ---")
     try:
         with psycopg.connect(conn_str) as conn:
             with conn.cursor() as cur:
-                sql_query = "SELECT package.name,MAX(CASE WHEN record_ranked rn=2 THEN record_ranked.date END) AS m, COUNT(record.package_id) FROM package JOIN record ON package.id=record.package_id GROUP BY m DNSC;"
-                
-                cur.execute(sql_query)
-                
+                sql_query ="SELECT package.name , MAX(record.date), COUNT(record.package_id) FROM package JOIN record ON package.id = record.package_id GROUP BY package.name ORDER BY 前回忘れた日付 DESC;"
                 results = cur.fetchall()
                 
                 if results:
@@ -36,6 +34,10 @@ def select_package_record(conn_str:str):
                         print(f"  忘れ物名: {row[0]}, 前々回忘れた日付: {row[1]}, 忘れた回数: {row[2]}")
                 else:
                     print("データが見つかりませんでした。")
-                    
+                return results    
     except psycopg.Error as e:
         print(f"データベースエラーが発生しました: {e}")
+        return None
+    except Exception as e: # その他の予期せぬエラーもキャッチする
+        print(f"予期せぬエラーが発生しました: {e}")
+        return None
