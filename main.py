@@ -4,6 +4,8 @@ from linebot.models import MessageEvent, TextMessage,ImageSendMessage
 from fastapi import FastAPI, Request, BackgroundTasks, Header
 from dotenv import load_dotenv
 from starlette.exceptions import HTTPException
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
@@ -12,6 +14,30 @@ LINE_BOT_API=LineBotApi(os.environ["ACCESS_TOKEN"])
 handler=WebhookHandler(os.environ["CHANNEL_SECRET"])
 app = FastAPI()
 
+# Fetch variables
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+DBNAME = os.getenv("DBNAME")
+
+# Construct the SQLAlchemy connection string
+SUPABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+
+# Create the SQLAlchemy engine
+engine = create_engine(SUPABASE_URL)
+# If using Transaction Pooler or Session Pooler, we want to ensure we disable SQLAlchemy client side pooling -
+# https://docs.sqlalchemy.org/en/20/core/pooling.html#switching-pool-implementations
+# engine = create_engine(DATABASE_URL, poolclass=NullPool)
+
+# Test the connection
+try:
+    with engine.connect() as connection:
+        print("Connection successful!")
+except Exception as e:
+    print(f"Failed to connect: {e}")               
+        
+        
 
 @app.get("/")
 def read_root():
@@ -57,9 +83,9 @@ def handle_message(event):
         LINE_BOT_API.reply_message(event.reply_token, message)
     else:
         message = TextMessage(text="いつも使ってくれてありがとう")
-        LINE_BOT_API.reply_message(event.reply_token, message)   
-        
-        
-        
-    
-     
+        LINE_BOT_API.reply_message(event.reply_token, message)
+
+
+
+
+
