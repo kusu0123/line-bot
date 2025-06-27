@@ -14,6 +14,7 @@ def insert_package(conn_str:str,package_name:str):
                 SELECT id, CURRENT_DATE FROM inserted_package;
                 """
                 cur.execute(sql_query, (package_name,))
+                print(f"'{package_name}' のパッケージと関連レコードが追加されました。")
     except psycopg.Error as e:
         print(f"データベースエラーが発生しました: {e}")
 
