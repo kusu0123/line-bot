@@ -84,7 +84,7 @@ def handle_message(event):
                         f"  前々回忘れた日付: {last_but_one_date_str}\n"
                         f"  忘れた回数: {row[2]}回"
                     )
-        LINE_BOT_API.reply_message(event.reply_token, message)
+                    LINE_BOT_API.reply_message(event.reply_token, message)
     elif "を忘れた" in message_text:
         
         package_name_to_add = message_text.replace("を忘れた", "").strip()
