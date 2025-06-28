@@ -65,36 +65,48 @@ async def callback(
 @handler.add(MessageEvent)
 def handle_message(event):
     message_text = event.message.text.lower()
-    
+    reply_message = TextMessage(text="メッセージをありがとう！\n「〜を調べる」または「〜を忘れた」と話しかけてみてね。") 
     if "を調べる" in message_text:
         item_name_to_search = message_text.replace("を調べる", "").strip()
-        LINE_BOT_API.reply_message(event.reply_token, message)
-        if item_name_to_search:
-            all_records=supabase.select_package_record(SUPABASE_URL)
-            
-            response_messages = []
-
-            found_items_info = [] 
-
-            for row in all_records:
-                if item_name_to_search in row[0].lower(): # 大文字小文字を区別しない検索
-                    last_but_one_date_str = row[1].strftime('%Y-%m-%d') if row[1] else "N/A"
-                    found_items_info.append(
-                        f"'{row[0]}' の情報:\n"
-                        f"  前々回忘れた日付: {last_but_one_date_str}\n"
-                        f"  忘れた回数: {row[2]}回"
-                    )
-                    LINE_BOT_API.reply_message(event.reply_token, message)
-    elif "を忘れた" in message_text:
         
+        if not item_name_to_search:
+            # 検索キーワードが空の場合
+            reply_message = TextMessage(text="調べたい忘れ物の名前を入力してください。\n例: '傘を調べる'")
+        else:
+            # 検索キーワードがある場合 (データベースエラーが発生した場合、ここでクラッシュします)
+            all_records = supabase.select_package_record(SUPABASE_URL)
+            
+            found_items_info = [] 
+            if all_records: # レコードが取得できた場合のみ処理
+                for row in all_records:
+                    # 検索語句が忘れ物名の一部に含まれるかチェック (大文字小文字を区別しない)
+                    if item_name_to_search in row[0].lower():
+                        # row[1] は日付オブジェクト（前回忘れた日付）
+                        last_forgot_date_str = row[1].strftime('%Y-%m-%d') if row[1] else "N/A"
+                        found_items_info.append(
+                            f"'{row[0]}' の情報:\n"
+                            f"  前回忘れた日付: {last_forgot_date_str}\n" # 文言修正
+                            f"  忘れた回数: {row[2]}回"
+                        )
+            
+            if found_items_info:
+                # 見つかったアイテム情報を結合して一つのメッセージとして返信
+                reply_message = TextMessage(text="\n\n".join(found_items_info))
+            else:
+                # 検索結果がなかった場合
+                reply_message = TextMessage(text=f"'{item_name_to_search}' の忘れ物は見つかりませんでした。")
+
+
+    elif "を忘れた" in message_text:
         package_name_to_add = message_text.replace("を忘れた", "").strip()
-        if package_name_to_add:
+        
+        if not package_name_to_add:
+            reply_message = TextMessage(text="忘れ物として追加したい名前を入力してください。\n例: '鍵を忘れた'")
+        else:
             supabase.insert_package(SUPABASE_URL, package_name_to_add)
-            message = TextMessage(text=f"'{package_name_to_add}' を忘れ物リストに追加しました！")
-        LINE_BOT_API.reply_message(event.reply_token, message)
-    else:
-        message = TextMessage(text="いつも使ってくれてありがとう")
-        LINE_BOT_API.reply_message(event.reply_token, message)
+            reply_message = TextMessage(text=f"'{package_name_to_add}' を忘れ物リストに追加しました！")
+    
+    LINE_BOT_API.reply_message(event.reply_token,reply_message)
 
 
 

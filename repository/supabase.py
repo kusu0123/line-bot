@@ -25,7 +25,7 @@ def select_package_record(conn_str:str):
     try:
         with psycopg.connect(conn_str) as conn:
             with conn.cursor() as cur:
-                sql_query ="SELECT package.name , MAX(record.date), COUNT(record.package_id) FROM package JOIN record ON package.id = record.package_id GROUP BY package.name ORDER BY 前回忘れた日付 DESC;"
+                sql_query ="SELECT package.name , MAX(record.date), COUNT(record.package_id) FROM package JOIN record ON package.id = record.package_id GROUP BY package.name ORDER BY MAX(record.date) DESC;"
                 results = cur.fetchall()
                 
                 if results:
