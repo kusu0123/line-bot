@@ -95,8 +95,6 @@ def handle_message(event):
             else:
                 # 検索結果がなかった場合
                 reply_message = TextMessage(text=f"'{item_name_to_search}' の忘れ物は見つかりませんでした。")
-
-
     elif "を忘れた" in message_text:
         package_name_to_add = message_text.replace("を忘れた", "").strip()
         
