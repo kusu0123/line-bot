@@ -54,9 +54,8 @@ async def callback(
     body = await request.body()
 
     try:
-        background_tasks.add_task(
-            handler.handle, body.decode("utf-8"), x_line_signature
-        )
+        # 非同期タスクから同期処理に変更
+        handler.handle(body.decode("utf-8"), x_line_signature)
     except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Invalid signature")
 
