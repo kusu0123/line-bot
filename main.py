@@ -5,9 +5,9 @@ from fastapi import FastAPI, Request, BackgroundTasks, Header
 from dotenv import load_dotenv
 from starlette.exceptions import HTTPException
 from sqlalchemy import create_engine
-app=FastAPI()
-
 from repository import supabase
+import os
+app=FastAPI()
 
 load_dotenv()
 
