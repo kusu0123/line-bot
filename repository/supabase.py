@@ -8,7 +8,10 @@ def insert_package(conn_str:str,package_name:str):
                 with conn.cursor() as cur:
                     sql_query = """
                 WITH inserted_package AS (
-                    INSERT INTO package(name) VALUES (%s) RETURNING id
+                    INSERT INTO package(name) 
+                    VALUES (%s) 
+                    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+                    RETURNING id
                 )
                 INSERT INTO record(package_id, date)
                 SELECT id, CURRENT_DATE FROM inserted_package;
@@ -25,7 +28,23 @@ def select_package_record(conn_str:str):
     try:
         with psycopg.connect(conn_str) as conn:
             with conn.cursor() as cur:
-                sql_query ="SELECT package.name , MAX(record.date), COUNT(record.package_id) FROM package JOIN record ON package.id = record.package_id GROUP BY package.name ORDER BY MAX(record.date) DESC;"
+                sql_query ="""
+                 SELECT 
+                        package.name, 
+                        MAX(record.date) AS last_date, 
+                        COUNT(record.package_id) AS forget_count
+                    FROM 
+                        package 
+                    JOIN 
+                        record 
+                    ON 
+                        package.id = record.package_id
+                    GROUP BY 
+                        package.name
+                    ORDER BY 
+                        last_date DESC;
+                """
+                cur.execute(sql_query)
                 results = cur.fetchall()
                 
                 if results:
@@ -38,6 +57,6 @@ def select_package_record(conn_str:str):
     except psycopg.Error as e:
         print(f"データベースエラーが発生しました: {e}")
         return None
-    except Exception as e: # その他の予期せぬエラーもキャッチする
+    except Exception as e: 
         print(f"予期せぬエラーが発生しました: {e}")
         return None
