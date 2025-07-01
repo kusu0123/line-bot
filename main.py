@@ -107,10 +107,5 @@ def handle_message(event):
     
     LINE_BOT_API.reply_message(event.reply_token,reply_message)
 
-if __name__ == "__main__":
-    port = 8000
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
-   
-
 
 
