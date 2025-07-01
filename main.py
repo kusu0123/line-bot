@@ -25,9 +25,12 @@ HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
 DBNAME = os.getenv("DBNAME")
 
-SUPABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+SQLALCHEMY_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
-engine = create_engine(SUPABASE_URL)
+# psycopg 用（psycopg.connect に使う）
+PSYCOPG_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+
+engine = create_engine(SQLALCHEMY_URL)
 
 app = FastAPI()
 
@@ -76,7 +79,7 @@ def handle_message(event):
             reply_message = TextSendMessage(text="調べたい忘れ物の名前を入力してください。\n例: '傘を調べる'")
         else:
             # 検索キーワードがある場合 (データベースエラーが発生した場合、ここでクラッシュします)
-            all_records = supabase.select_package_record(SUPABASE_URL)
+            all_records = supabase.select_package_record(PSYCOPG_URL)
             
             found_items_info = [] 
             if all_records: # レコードが取得できた場合のみ処理
@@ -103,7 +106,7 @@ def handle_message(event):
         if not package_name_to_add:
             reply_message = TextSendMessage(text="忘れ物として追加したい名前を入力してください。\n例: '鍵を忘れた'")
         else:
-            supabase.insert_package(SUPABASE_URL, package_name_to_add)
+            supabase.insert_package(SQLALCHEMY_URL, package_name_to_add)
             reply_message = TextSendMessage(text=f"'{package_name_to_add}' を忘れ物リストに追加しました！")
     
     LINE_BOT_API.reply_message(event.reply_token,reply_message)
