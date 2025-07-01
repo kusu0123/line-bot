@@ -7,6 +7,8 @@ from starlette.exceptions import HTTPException
 from sqlalchemy import create_engine
 from repository import supabase
 import os
+import uvicorn
+
 app=FastAPI()
 
 load_dotenv()
@@ -23,7 +25,7 @@ DBNAME = os.getenv("DBNAME")
 
 SQLALCHEMY_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
-PSYCOPG_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+PSYCOPG_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 
 engine = create_engine(SQLALCHEMY_URL)
 
@@ -106,9 +108,7 @@ def handle_message(event):
     LINE_BOT_API.reply_message(event.reply_token,reply_message)
 
 if __name__ == "__main__":
-    import uvicorn
-    import os
-    port = int(os.environ.get("PORT", 8000))  # Renderが自動でPORTを渡す
+    port = 8000j
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
    
 
