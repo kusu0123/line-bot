@@ -25,7 +25,7 @@ HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
 DBNAME = os.getenv("DBNAME")
 
-SUPABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+SUPABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
 engine = create_engine(SUPABASE_URL)
 
